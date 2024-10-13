@@ -6,5 +6,6 @@
 This is a TUM internal exploit, but I'm still publishing this writeup for educational purposes, as I consider both the security set-up and exploitation strategy interesting.
 
 <img src="img/AppArmor.png" alt="AppArmor" width="200"/>
+
 [AppArmor](https://www.apparmor.net/) is a Linux kernel security module that offers *per-program* security policies.
 Programs are identified by *path*. Authorized programs can switch between different security policies at runtime.
