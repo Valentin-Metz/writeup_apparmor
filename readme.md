@@ -72,3 +72,5 @@ Specifically, the **environmental variables** present at its launch.
 
 An environmental variable with useful effects for our cause is the `LD_PRELOAD` variable.
 It instructs the [dynamic linker](https://linux.die.net/man/8/ld-linux) to link a dynamic library from a specified path into any program that is launched while `LD_PRELOAD` is in context.
+
+The hereby linked library **takes precedent** over any dynamic library that would *usually* be linked into the target program.
