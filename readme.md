@@ -65,4 +65,5 @@ If we were to call this function in our untrusted program (or any other program 
 ### 3. DLL injection
 
 How can we *become* the measure program?\
-We can not write or modify it, but there is one thing we control: The **environment**, or more specifically, the **environmental variables**.
+We can not write or modify it, but there is one thing we control:\
+The **environment**, or more specifically, the **environmental variables**.
