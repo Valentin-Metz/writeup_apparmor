@@ -76,5 +76,37 @@ It instructs the [dynamic linker](https://linux.die.net/man/8/ld-linux) to link 
 The hereby linked library **takes precedent** over any dynamic library that would *usually* be linked into the target program.
 
 In our case, this allows us to supply the `measure` program with a custom (and very excellent) implementation of the `libc` [`exit()`](https://www.man7.org/linux/man-pages/man3/exit.3.html) function:
+```c++
+void exit(int status) {
+        unsetenv("LD_PRELOAD");
+        //setgid(0);
+        //setuid(0);
+        
+        std::string line;
+        std::vector<std::string> lines;
 
-![solve](img/solve.png)
+        
+        aa_change_hat("untrusted", 0x961101); 
+        system("echo Hello from untrusted area!"); // does not print
+        
+        std::ifstream input("/opt/tpch/sf1/customer1.tbl");
+
+        while (!input.eof()){
+            std::getline(input,line);
+            lines.push_back(line);
+        }
+        
+        aa_change_hat(0, 0x961101);
+        system("echo Hello from trusted area!");
+        system("cat /opt/tpch/sf1/customer1.tbl"); // no permissions to open
+        
+        std::cerr << "Writing to stderr works!" << std::endl;
+        
+
+        for(size_t i = 0; i < lines.size(); ++i){
+            std::cerr << lines[i] << std::endl;
+        }
+        
+        fprintf(stderr, "Done\n");
+}
+```
