@@ -76,5 +76,11 @@ It instructs the [dynamic linker](https://linux.die.net/man/8/ld-linux) to link 
 The hereby linked library **takes precedent** over any dynamic library that would *usually* be linked into the target program.
 
 In our case, this allows us to supply the `measure` program with a custom (and very excellent) implementation of the `libc` [`exit()`](https://www.man7.org/linux/man-pages/man3/exit.3.html) function:
-
 ![solve](img/solve.png)
+
+Instead of exiting the program as planned, this calls the `aa_change_hat()` function.\
+This works, because we are now part of the trusted `measure` process context, and therefore executing from the same source binary path.
+
+After changing security profile, we are allowed to read the content of the secret `/opt/tpch/sf1/customer1.tbl` dataset.
+As we are not allowed to print while in this profile, we have to save its content to an internal buffer.
+We then swap the back the security profile and print to `stderr`, successfully leaking the secret dataset.
