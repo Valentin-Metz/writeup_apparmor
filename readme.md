@@ -55,3 +55,5 @@ In any case, inserting this into the deployment script leaves us with a simple, 
 ### 2. Bypassing AppArmor protection
 Let us take a quick look at the Ghidra disassembler output of relevant section of the `measure` program:
 ![measure](img/measure.png)
+Line `92` swaps into the trusted profile. Line `129` swaps out of it.
+Line `122` executes the user program.
