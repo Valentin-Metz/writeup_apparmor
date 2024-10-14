@@ -58,3 +58,6 @@ Let us take a quick look at the Ghidra disassembler output of relevant section o
 Line `92` swaps into the privileged profile. Line `129` swaps out of it.\
 Line `122` executes the untrusted program.
 
+The problem is that we can not simply call [`aa_change_hat()`](https://man.archlinux.org/man/aa_change_hat.2.en) ourselves.
+The [AppArmor](https://www.apparmor.net/) kernel security module checks the binary path of the program executing the respective syscall.
+If we were to call this function in our untrusted program (or any other program placed on the target machine), the security profile change would be *denied*.
