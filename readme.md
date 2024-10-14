@@ -75,4 +75,6 @@ It instructs the [dynamic linker](https://linux.die.net/man/8/ld-linux) to link 
 
 The hereby linked library **takes precedent** over any dynamic library that would *usually* be linked into the target program.
 
-In our case, this allows us to supply the `measure` program with a custom (and very excellent) implementation of the `libc` [`exit()`](https://www.man7.org/linux/man-pages/man3/exit.3.html) function.
+In our case, this allows us to supply the `measure` program with a custom (and very excellent) implementation of the `libc` [`exit()`](https://www.man7.org/linux/man-pages/man3/exit.3.html) function:
+
+![solve](img/solve.png)
