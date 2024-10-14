@@ -10,6 +10,7 @@ This is a TUM internal exploit, but I'm still publishing this writeup for educat
 [AppArmor](https://www.apparmor.net/) is a Linux kernel security module that offers *per-program* security policies.
 Programs are identified by **path**. Authorized programs can switch between different security policies at runtime.
 
+
 ## Background
 The set-up can roughly be explained as follows:
 
@@ -25,7 +26,14 @@ As the students are able to submit arbitrary code, a special solution was devise
 
 2. A special, *trusted* `measure` program is accessible to the unprivileged user. The `measure` program can only be read or executed, but not modified.
 It performs the following three crucial functions:
-    1. It uses AppArmor to [change the active security profile](https://man.archlinux.org/man/aa_change_hat.2.en). The new security profile is allowed to access the test dataset, but not allowed to do any kind of I/O. Among other things, it blocks things like file system access, network operations and the stdout file descriptor.
+    1. It uses AppArmor to [change the active security profile](https://man.archlinux.org/man/aa_change_hat.2.en). The new security profile is allowed to access the test dataset, but not allowed to do any kind of I/O. Among other things, it blocks file system access, network operations and the stdout file descriptor.
     2. It logs the current system time, executes the untrusted user program, redirects its output into a buffer and logs the current time again, once the user program returns or times out.
     3. It swaps the security profile back to the unprivileged profile, compares the logged buffer content with the expected answer, and, if correct, uploads the time required by the user program to generate the answer to the leaderboard.
     It also prints feedback (the measured time required and whether the answer was correct) to stdout.
+
+    
+## Exploitation
+
+1. Backdooring the GitLab server.
+
+This is not strictly necessary (and not exactly difficult since we control the GitLab `.gitlab-ci.yml`), but a quick reverse shell makes it much easier to debug changes instead of having to wait for the entire CI/CD pipeline to run through.
