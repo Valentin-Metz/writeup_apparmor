@@ -18,9 +18,14 @@ They push their source code to a GitLab instance, which then builds and tests th
 The only piece of information they get back is whether their submission was a success or failure.
 If their submission is fast enough, they get a grade bonus for the exam.
 
-If one were able to leak the test dataset, one could either hardcode an answer, or optimize ones submission against the test dataset, claiming pole position on the leaderboard.
+If one were able to leak the test dataset, one could either hard-code an answer, or optimize ones submission against the test dataset, claiming pole position on the leaderboard.
 
 As the students are able to submit arbitrary code, a special solution was devised to keep them from leaking the hidden dataset:
+1. The student program is compiled and uploaded to the test server. In this case the test server is an actual physical machine, so that benchmark results are reported accurately. It offers access to an *unprivileged* user account, that is not allowed to read the test dataset, but can otherwise freely use the system.
 
-A special, *trusted* tester program executes the student program and disables all input,  output, file system access and network access while it is active.
-It then compares the result to the expected result and logs the time the student program took onto the leaderboard.
+2. A special, *trusted* `measure` program is accessible to the unprivileged user. This program can only be read or executed, but not modified.
+This program does three crucial things:
+    1. It uses AppArmor to change the active security profile. The new security profile is allowed to access the test dataset, but not allowed to do any kind of I/O. Among other things, it blocks things like file system access, network operations and the stdout file descriptor.
+    2. It logs the current system time, executes the untrusted user program, redirects its output into a buffer and logs the current time again, once the user program returns or times out.
+    3. It swaps the security profile back to the unprivileged profile, compares the logged buffer content with the expected answer, and, if correct, uploads the time required by the user program to generate the answer to the leaderboard.
+    It also prints feedback (the measured time required and whether the answer was correct) to stdout.
