@@ -56,6 +56,7 @@ You might also find this useful if you ever have to debug a CI/CD pipeline.
 ### 2. Inspecting the target program
 Let us take a quick look at the Ghidra disassembler output of the relevant section of the `measure` program:
 ![measure](img/measure.png)
+
 Line `92` swaps into the privileged profile. Line `129` swaps out of it.\
 Line `122` executes the untrusted program.
 
