@@ -34,6 +34,6 @@ It performs the following three crucial functions:
     
 ## Exploitation
 
-1. Backdooring the GitLab server.
+### Backdooring the GitLab server.
 
 This is not strictly necessary (and not exactly difficult since we control the GitLab `.gitlab-ci.yml`), but a quick reverse shell makes it much easier to debug changes instead of having to wait for the entire CI/CD pipeline to run through.
